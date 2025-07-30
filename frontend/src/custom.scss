@@ -40,7 +40,7 @@ body {
   justify-content: center;
   align-items: stretch;
   gap: 2.5rem;
-  min-height: 60vh;
+
   flex-wrap: wrap;
 }
 
@@ -98,10 +98,10 @@ body {
 .home-block p {
   color: #444;
   font-size: 1.1rem;
-  margin-bottom: 1.2rem;
+  margin-bottom: 0.3rem;
 }
 .home-block .btn {
-  margin-top: 0.5rem;
+  margin-top: 0.1rem;
 }
 .home-section:last-child {
   margin-bottom: 3rem;
