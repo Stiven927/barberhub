@@ -5,43 +5,13 @@ import AdminProdotti from '../components/AdminProdotti';
 
 
 const Admin = () => {
-  const [form, setForm] = useState({ nome: '', prezzo: '', descrizione: '', disponibilita: '' });
-  const [msg, setMsg] = useState('');
-  const [loading, setLoading] = useState(false);
+
   // Stato per la sezione attiva: 'ordini', 'prenotazioni', 'prodotti'
   const [sezione, setSezione] = useState('ordini');
 
-  const handleChange = e => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
+ 
 
-  const handleSubmit = async e => {
-    e.preventDefault();
-    setLoading(true);
-    setMsg('');
-    try {
-      const res = await fetch('http://localhost:5200/api/prodotti', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          nome: form.nome,
-          prezzo: parseFloat(form.prezzo),
-          descrizione: form.descrizione,
-          disponibilita: parseInt(form.disponibilita || '0', 10)
-        })
-      });
-      if (res.ok) {
-        setMsg('Prodotto inserito con successo!');
-        setForm({ nome: '', prezzo: '', descrizione: '', disponibilita: '' });
-      } else {
-        const data = await res.json();
-        setMsg(data.error || 'Errore nell\'inserimento');
-      }
-    } catch (err) {
-      setMsg('Errore di rete');
-    }
-    setLoading(false);
-  };
+ 
 
   return (
     <div className="container py-5">
