@@ -1,0 +1,75 @@
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { FaBoxOpen } from 'react-icons/fa';
+
+
+const Prodotti = ({ utente }) => {
+  const [prodotti, setProdotti] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [ordini, setOrdini] = useState({}); // { [prodottoId]: quantita }
+  const [msg, setMsg] = useState('');
+
+  useEffect(() => {
+    fetch('http://localhost:5200/api/prodotti')
+      .then(res => res.json())
+      .then(data => {
+        setProdotti(data);
+        setLoading(false);
+      });
+  }, []);
+
+  const handleOrder = (prodottoId) => {
+    const quantita = Number(ordini[prodottoId]) || 1;
+    if (!quantita) {
+      setMsg('Inserisci la quantità');
+      return;
+    }
+    const clienteId = utente.clienteId || utente.id;
+    fetch('http://localhost:5200/api/ordini', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prodottoId, clienteId, quantita })
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.error) setMsg('Errore: ' + data.error);
+        else {
+          setMsg('Ordine effettuato con successo!');
+          // Ricarica prodotti per aggiornare la disponibilità
+          fetch('http://localhost:5200/api/prodotti')
+            .then(res => res.json())
+            .then(data => setProdotti(data));
+        }
+      })
+      .catch(() => setMsg('Errore nella richiesta'));
+  };
+
+  return (
+    <div className="container mt-4">
+      <h2 className="mb-4" style={{color:'#0d1a4a'}}>Prodotti</h2>
+      {msg && <div className="alert alert-info">{msg}</div>}
+      <div className="row justify-content-center">
+        {loading ? <p>Caricamento...</p> : prodotti.map(prodotto => (
+          <div className="col-md-4 mb-4" key={prodotto.id}>
+            <div className="home-block" style={{minHeight:320}}>
+              <div className="icon"><FaBoxOpen /></div>
+              <h5 className="mb-2" style={{color:'#e10600', fontWeight:700}}>{prodotto.nome}</h5>
+              <h6 className="mb-2 text-primary">€{Number(prodotto.prezzo).toFixed(2)}</h6>
+              <p className="mb-2" style={{minHeight:48}}>{prodotto.descrizione}</p>
+              <div className="mb-2">Disponibilità: <b>{prodotto.disponibilita}</b></div>
+              <div className="d-flex w-100 gap-2 mt-auto">
+                <Link to={`/prodotti/${prodotto.id}`} className="btn btn-outline-secondary flex-fill">Dettaglio</Link>
+                <form className="d-flex flex-fill" style={{gap:4}} onSubmit={e => { e.preventDefault(); handleOrder(prodotto.id); }}>
+                  <input type="number" className="form-control" style={{maxWidth:70}} min="1" max={prodotto.disponibilita} value={ordini[prodotto.id] || 1} onChange={e => setOrdini({ ...ordini, [prodotto.id]: e.target.value })} required disabled={prodotto.disponibilita < 1} />
+                  <button type="submit" className="btn btn-primary" disabled={prodotto.disponibilita < 1}>Acquista</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+export default Prodotti;
