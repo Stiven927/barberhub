@@ -8,6 +8,28 @@ $navbar-link-active: $secondary;
 
 @import '~bootstrap/scss/bootstrap';
 
+html {
+  height: 100%;
+}
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: #f8f9fa;
+}
+main {
+  flex: 1 0 auto;
+}
+.footer-sticky {
+  margin-top: auto !important;
+  background: $primary !important;
+  color: $light !important;
+}
 .navbar-custom {
   background: $navbar-bg;
   .navbar-brand, .nav-link {
@@ -29,9 +51,6 @@ $navbar-link-active: $secondary;
   }
 }
 
-body {
-  background: #f8f9fa;
-}
 
 .home-section {
   padding: 1.5rem 0 1.5rem 0;

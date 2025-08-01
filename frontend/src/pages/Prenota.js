@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import BookingCalendar from '../components/BookingCalendar';
+import BookingCalendar from '../components/BookingCalendar';
 
 const servizi = [
   { nome: 'Taglio', prezzo: 15 },
@@ -14,6 +15,7 @@ const Prenota = ({ utente }) => {
   const [note, setNote] = useState('');
   const [msg, setMsg] = useState('');
   const [loading, setLoading] = useState(false);
+
 
   const handleSelect = (data, orario) => {
     setSelezione({ data, orario });

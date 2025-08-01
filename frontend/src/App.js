@@ -33,7 +33,7 @@ function App() {
   return (
     <Router>
       <Header utente={utente} onLogout={handleLogout} />
-      <main style={{minHeight:'70vh'}}>
+      <main>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login onLogin={handleLogin} />} />

@@ -1,0 +1,23 @@
+/* Scroll orizzontale per le card prodotti */
+.prodotti-scroll {
+  display: flex;
+  flex-direction: row;
+  gap: 1.5rem;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+  scroll-snap-type: x mandatory;
+}
+.prodotto-card {
+  flex: 0 0 auto;
+  scroll-snap-align: start;
+  width: 320px;
+  max-width: 90vw;
+}
+@media (max-width: 900px) {
+  .prodotti-scroll {
+    gap: 1rem;
+  }
+  .prodotto-card {
+    width: 260px;
+  }
+}
