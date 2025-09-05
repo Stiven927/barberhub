@@ -2,14 +2,38 @@ const express = require('express');
 const router = express.Router();
 const Prenotazione = require('../models/Prenotazione');
 
+// mappa prezzi servizi gestita dal server
+const SERVICE_PRICES = {
+  'Taglio': 15,
+  'Taglio + Barba': 25,
+  'Solo Barba': 10,
+  'Tinta': 30,
+  'Taglio+Shampoo': 20
+};
+
+// Elimina tutte le prenotazioni
+router.delete('/all', async (req, res) => {
+  try {
+    await Prenotazione.destroy({ where: {} });
+    res.json({ message: 'Tutte le prenotazioni sono state eliminate.' });
+  } catch (err) {
+    res.status(500).json({ error: 'Errore durante la cancellazione delle prenotazioni.' });
+  }
+});
+
 // Crea una nuova prenotazione
 router.post('/', async (req, res) => {
   try {
-    const { servizio, prezzo } = req.body;
-    if (!servizio || typeof prezzo !== 'number') {
-      return res.status(400).json({ error: 'Servizio e prezzo sono obbligatori' });
+    const { servizio } = req.body;
+    if (!servizio) {
+      return res.status(400).json({ error: 'Servizio è obbligatorio' });
     }
-    const prenotazione = await Prenotazione.create(req.body);
+    const prezzo = SERVICE_PRICES[servizio];
+    if (typeof prezzo !== 'number') {
+      return res.status(400).json({ error: 'Servizio non valido' });
+    }
+    const payload = { ...req.body, prezzo };
+    const prenotazione = await Prenotazione.create(payload);
     res.status(201).json(prenotazione);
   } catch (err) {
     res.status(400).json({ error: err.message });
@@ -57,6 +81,14 @@ router.put('/:id', async (req, res) => {
   try {
     const prenotazione = await Prenotazione.findByPk(req.params.id);
     if (!prenotazione) return res.status(404).json({ error: 'Prenotazione non trovata' });
+    // Se viene cambiato il servizio, ricalcolo il prezzo dal mapping server-side
+    if (req.body.servizio) {
+      const prezzo = SERVICE_PRICES[req.body.servizio];
+      if (typeof prezzo !== 'number') {
+        return res.status(400).json({ error: 'Servizio non valido' });
+      }
+      req.body.prezzo = prezzo;
+    }
     await prenotazione.update(req.body);
     res.json(prenotazione);
   } catch (err) {

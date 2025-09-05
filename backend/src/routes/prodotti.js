@@ -1,6 +1,15 @@
 const express = require('express');
 const router = express.Router();
 const Prodotto = require('../models/Prodotto');
+// Elimina tutti i prodotti
+router.delete('/all', async (req, res) => {
+  try {
+    await Prodotto.destroy({ where: {} });
+    res.json({ message: 'Tutti i prodotti sono stati eliminati.' });
+  } catch (err) {
+    res.status(500).json({ error: 'Errore durante la cancellazione dei prodotti.' });
+  }
+});
 
 // Crea un nuovo prodotto
 router.post('/', async (req, res) => {
