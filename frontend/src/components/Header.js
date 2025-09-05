@@ -1,66 +1,80 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { FaCut, FaUserCircle } from 'react-icons/fa';
+import { FaCut, FaBars } from 'react-icons/fa';
+import ConfirmationModal from './ConfirmationModal';
 
 const Header = ({ utente, onLogout }) => {
   const navigate = useNavigate();
-  const handleLogout = () => {
+  const [showLogoutConfirm, setShowLogoutConfirm] = React.useState(false);
+  const [openMenu, setOpenMenu] = React.useState(false);
+
+  const handleLogoutConfirmed = () => {
+    setShowLogoutConfirm(false);
     onLogout();
     navigate('/login');
   };
+
+  const userInitial = utente && (utente.nome ? utente.nome.charAt(0).toUpperCase() : (utente.email ? utente.email.charAt(0).toUpperCase() : 'U'));
+
   return (
-    <nav className="navbar navbar-expand-lg navbar-custom shadow-sm">
-      <div className="container-fluid">
-        <Link className="navbar-brand d-flex align-items-center" to="/">
-          <FaCut style={{marginRight:8, color:'#e10600', fontSize:28}} />
-          <span style={{fontWeight:700, letterSpacing:2}}>BarberHub</span>
-        </Link>
-        <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-          <span className="navbar-toggler-icon"></span>
-        </button>
-        <div className="collapse navbar-collapse" id="navbarNav">
-          <ul className="navbar-nav ms-auto align-items-center">
-            <li className="nav-item">
-              <Link className="nav-link" to="/">Home</Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link" to="/prodotti">Prodotti</Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link" to="/prenota">Prenota</Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link" to="/contattaci">Contattaci</Link>
-            </li>
-            {utente ? (
-              <>
-                {utente.ruolo === 'admin' && (
-                  <li className="nav-item">
-                    <Link className="nav-link" to="/admin">Admin</Link>
-                  </li>
-                )}
-                <li className="nav-item d-flex align-items-center">
-                  <FaUserCircle style={{fontSize:22, marginRight:4, color:'#e10600'}} />
-                  <span className="nav-link disabled">{utente.nome || utente.email}</span>
-                </li>
-                <li className="nav-item">
-                  <button className="btn btn-outline-light btn-sm ms-2" onClick={handleLogout}>Logout</button>
-                </li>
-              </>
-            ) : (
-              <>
-                <li className="nav-item">
-                  <Link className="nav-link" to="/login">Login</Link>
-                </li>
-                <li className="nav-item">
-                  <Link className="nav-link" to="/registrati">Registrati</Link>
-                </li>
-              </>
+    <>
+      <nav className="navbar navbar-custom shadow-sm">
+        <div className="container-fluid d-flex justify-content-between align-items-center">
+          <Link className="navbar-brand d-flex align-items-center" to="/">
+            <FaCut style={{marginRight:8, color:'#e10600', fontSize:28}} />
+            <span style={{fontWeight:700, letterSpacing:2}}>BarberHub</span>
+          </Link>
+
+          <div className="d-flex align-items-center">
+            {utente && (
+              <div className="me-3 d-flex align-items-center text-white" style={{fontWeight:600}}>
+                <div className="user-initial me-2">{utente.ruolo === 'admin' ? 'A' : userInitial}</div>
+                <div className="d-none d-md-block">{utente.ruolo === 'admin' ? 'Admin' : (utente.nome || utente.email)}</div>
+              </div>
             )}
-          </ul>
+
+            <button className="btn btn-hamburger" onClick={() => setOpenMenu(true)} aria-label="Apri menu">
+              <FaBars />
+            </button>
+          </div>
         </div>
-      </div>
-    </nav>
+      </nav>
+
+      {/* Custom offcanvas */}
+      {openMenu && (
+        <div>
+          <div className="offcanvas-overlay" onClick={() => setOpenMenu(false)} />
+          <div className="offcanvas-custom">
+            <div className="p-3 d-flex justify-content-between align-items-center border-bottom">
+              <strong>Menu</strong>
+              <button className="btn btn-sm btn-outline-secondary" onClick={() => setOpenMenu(false)}>Chiudi</button>
+            </div>
+            <div className="p-3">
+              <ul className="list-unstyled mb-0">
+                <li className="mb-2"><Link className="offcanvas-link" to="/" onClick={() => setOpenMenu(false)}>Home</Link></li>
+                <li className="mb-2"><Link className="offcanvas-link" to="/prodotti" onClick={() => setOpenMenu(false)}>Prodotti</Link></li>
+                <li className="mb-2"><Link className="offcanvas-link" to="/prenota" onClick={() => setOpenMenu(false)}>Prenota</Link></li>
+                <li className="mb-2"><Link className="offcanvas-link" to="/contattaci" onClick={() => setOpenMenu(false)}>Contattaci</Link></li>
+                {utente ? (
+                  <>
+                    {utente.ruolo === 'admin' && <li className="mb-2"><Link className="offcanvas-link" to="/admin" onClick={() => setOpenMenu(false)}>Admin</Link></li>}
+                    <li className="mb-2"><Link className="offcanvas-link" to="/profilo" onClick={() => setOpenMenu(false)}>Profilo</Link></li>
+                    <li className="mt-3"><button className="btn btn-outline-danger w-100" onClick={() => { setOpenMenu(false); setShowLogoutConfirm(true); }}>Logout</button></li>
+                  </>
+                ) : (
+                  <>
+                    <li className="mb-2"><Link className="offcanvas-link" to="/login" onClick={() => setOpenMenu(false)}>Login</Link></li>
+                    <li className="mb-2"><Link className="offcanvas-link" to="/registrati" onClick={() => setOpenMenu(false)}>Registrati</Link></li>
+                  </>
+                )}
+              </ul>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <ConfirmationModal show={showLogoutConfirm} title="Conferma logout" message="Sei sicuro di voler effettuare il logout?" onConfirm={handleLogoutConfirmed} onCancel={() => setShowLogoutConfirm(false)} confirmText="Logout" cancelText="Annulla" confirmClass="btn-primary" cancelClass="btn-secondary" />
+    </>
   );
 };
 

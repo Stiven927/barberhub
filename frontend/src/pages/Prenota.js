@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import BookingCalendar from '../components/BookingCalendar';
-import BookingCalendar from '../components/BookingCalendar';
+
 
 const servizi = [
   { nome: 'Taglio', prezzo: 15 },
-  { nome: 'Taglio+Shampoo', prezzo: 20 },
-  { nome: 'Barba', prezzo: 10 },
-  { nome: 'Tinta', prezzo: 25 }
+  { nome: 'Taglio + Barba', prezzo: 25 },
+  { nome: 'Solo Barba', prezzo: 10 },
+  { nome: 'Tinta', prezzo: 30 },
+  { nome: 'Taglio+Shampoo', prezzo: 20 }
 ];
 
 const Prenota = ({ utente }) => {

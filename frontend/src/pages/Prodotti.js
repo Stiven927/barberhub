@@ -15,22 +15,7 @@ const Prodotti = ({ utente }) => {
     fetch('http://localhost:5200/api/prodotti')
       .then(res => res.json())
       .then(data => {
-        // Demo: se meno di 8 prodotti, aggiungi prodotti fittizi per mostrare lo scroll
-        let arr = data;
-        if (data.length < 8) {
-          const fake = [
-            {id:1001, nome:'Shampoo Energizzante', prezzo:12, descrizione:'Dona energia e freschezza ai capelli.', disponibilita:10},
-            {id:1002, nome:'Cera Opaca', prezzo:9, descrizione:'Per uno styling naturale e duraturo.', disponibilita:15},
-            {id:1003, nome:'Olio Barba', prezzo:15, descrizione:'Nutre e ammorbidisce la barba.', disponibilita:8},
-            {id:1004, nome:'Balsamo Dopobarba', prezzo:11, descrizione:'Lenisce e idrata la pelle.', disponibilita:12},
-            {id:1005, nome:'Gel Fissaggio Forte', prezzo:8, descrizione:'Tenuta estrema per ogni look.', disponibilita:20},
-            {id:1006, nome:'Pettine Professionale', prezzo:6, descrizione:'Per uno styling perfetto ogni giorno.', disponibilita:30},
-            {id:1007, nome:'Spazzola Barba', prezzo:10, descrizione:'Districa e modella la barba.', disponibilita:18},
-            {id:1008, nome:'Crema Styling', prezzo:13, descrizione:'Definisce e protegge i capelli.', disponibilita:14},
-          ];
-          arr = [...data, ...fake.slice(0,8-data.length)];
-        }
-        setProdotti(arr);
+        setProdotti(data);
         setLoading(false);
       });
   }, []);

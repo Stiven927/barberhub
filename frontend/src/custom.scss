@@ -51,9 +51,69 @@ main {
   }
 }
 
+// Hamburger custom
+.btn-hamburger {
+  border: 1px solid rgba(255,255,255,0.2);
+  color: $light;
+  background: transparent;
+  padding: 8px 10px;
+  border-radius: 8px;
+}
+
+.offcanvas-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  z-index: 2000;
+}
+
+.offcanvas-custom {
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100%;
+  width: 320px;
+  background: linear-gradient(180deg, rgba(13,26,74,1) 0%, rgba(13,26,74,0.95) 100%);
+  color: #fff;
+  z-index: 2001;
+  box-shadow: -8px 0 24px rgba(0,0,0,0.25);
+}
+.offcanvas-custom .offcanvas-link {
+  color: #fff;
+  text-decoration: none;
+  display: block;
+  padding: 10px 6px;
+  border-radius: 6px;
+  transition: background 0.15s, transform 0.12s;
+}
+.offcanvas-custom .offcanvas-link:hover {
+  background: rgba(255,255,255,0.06);
+  transform: translateX(4px);
+  text-decoration: none;
+}
+.offcanvas-custom .btn-outline-danger {
+  border-color: rgba(255,255,255,0.18);
+  color: #fff;
+}
+.offcanvas-custom .btn-outline-danger:hover {
+  background: rgba(255,255,255,0.08);
+}
+
+.user-initial {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: $secondary;
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+}
+
 
 .home-section {
-  padding: 1.5rem 0 1.5rem 0;
+  padding: 2rem 1.5rem 2rem 1.5rem;
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -81,7 +141,9 @@ main {
 .home-block:hover {
   box-shadow: 0 8px 32px rgba(225,6,0,0.13);
   border-color: $secondary;
-  transform: translateY(-7px) scale(1.03);
+  /* Evitiamo spostamenti che escono dal contenitore: usiamo solo scale centrata */
+  transform: scale(1.03);
+  transform-origin: center center;
 }
 .home-block .icon {
   font-size: 3.5rem;
@@ -124,4 +186,15 @@ main {
 }
 .home-section:last-child {
   margin-bottom: 3rem;
+}
+
+/* Specifiche per layout prodotti: contenitore con padding per evitare che le card escano dai bordi */
+.prodotti-scroll {
+  padding: 1rem 1.5rem;
+  overflow-x: auto;
+}
+
+.prodotto-card {
+  box-sizing: border-box;
+  padding: 12px;
 }

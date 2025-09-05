@@ -12,6 +12,7 @@ import Contattaci from './pages/Contattaci';
 import Login from './pages/Login';
 import Registrati from './pages/Registrati';
 import Admin from './pages/Admin';
+import Profilo from './pages/Profilo';
 import { Navigate } from 'react-router-dom';
 
 function App() {
@@ -41,6 +42,7 @@ function App() {
           <Route path="/prodotti" element={utente ? <Prodotti utente={utente} /> : <Login onLogin={handleLogin} />} />
           <Route path="/prodotti/:id" element={<DettaglioProdotto />} />
           <Route path="/prenota" element={utente ? <Prenota utente={utente} /> : <Login onLogin={handleLogin} />} />
+          <Route path="/profilo" element={utente ? <Profilo utente={utente} /> : <Navigate to="/login" />} />
           <Route path="/contattaci" element={<Contattaci />} />
           <Route path="/admin" element={utente && utente.ruolo === 'admin' ? <Admin /> : <Navigate to="/" />} />
         </Routes>

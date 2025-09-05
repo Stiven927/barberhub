@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import ConfirmationModal from './ConfirmationModal';
 
 const AdminProdotti = () => {
   const [prodotti, setProdotti] = useState([]);
@@ -6,6 +7,8 @@ const AdminProdotti = () => {
   const [editId, setEditId] = useState(null);
   const [form, setForm] = useState({ nome: '', prezzo: '', descrizione: '', disponibilita: '' });
   const [msg, setMsg] = useState('');
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [toDeleteId, setToDeleteId] = useState(null);
 
   const fetchProdotti = () => {
     setLoading(true);
@@ -73,9 +76,15 @@ const AdminProdotti = () => {
   };
 
   const handleDelete = async id => {
-    if (!window.confirm('Vuoi eliminare questo prodotto?')) return;
+    // mostra modal di conferma
+    setToDeleteId(id);
+    setShowConfirm(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!toDeleteId) return;
     try {
-      const res = await fetch(`http://localhost:5200/api/prodotti/${id}`, { method: 'DELETE' });
+      const res = await fetch(`http://localhost:5200/api/prodotti/${toDeleteId}`, { method: 'DELETE' });
       if (res.ok) {
         setMsg('Prodotto eliminato!');
         fetchProdotti();
@@ -85,10 +94,18 @@ const AdminProdotti = () => {
     } catch {
       setMsg('Errore di rete');
     }
+    setShowConfirm(false);
+    setToDeleteId(null);
+  };
+
+  const cancelDelete = () => {
+    setShowConfirm(false);
+    setToDeleteId(null);
   };
 
   return (
     <div className="card p-4 mb-4 shadow-sm">
+      <ConfirmationModal show={showConfirm} title="Conferma eliminazione prodotto" message="Vuoi eliminare questo prodotto?" onConfirm={confirmDelete} onCancel={cancelDelete} confirmText="Elimina" cancelText="Annulla" confirmClass="btn-outline-danger" cancelClass="btn-outline-primary" />
       <h5 className="mb-3">Gestione Prodotti</h5>
       {msg && <div className={`alert ${msg.includes('!') ? 'alert-success' : 'alert-danger'} py-2`}>{msg}</div>}
       <form className="mb-3" onSubmit={handleSubmit}>
