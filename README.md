@@ -55,7 +55,7 @@ PORT=5200
 3. Seed admin (facoltativo ma consigliato per test):
 - `node src/seed_admin.js` — creerà un utente admin e il cliente associato.
 
-Note: il progetto usa Sequelize sync per creare le tabelle all'avvio (controlla `src/models/index.js`). Per produzione preferisci migration tools.
+Note: il progetto usa Sequelize sync per creare le tabelle all'avvio (controlla `src/models/index.js`).
 
 ---
 
@@ -68,14 +68,13 @@ Note: il progetto usa Sequelize sync per creare le tabelle all'avvio (controlla 
 ---
 
 ## Mappatura servizi e prezzi
-Il prezzo del servizio viene calcolato e imposto dal server per sicurezza (non fidarti del prezzo inviato dal client). Nel backend, in `backend/src/routes/prenotazioni.js`, è presente una mappa del tipo:
+Il prezzo del servizio viene calcolato e imposto dal server per sicurezza. Nel backend, in `backend/src/routes/prenotazioni.js`, è presente una mappa del tipo:
 
 - Taglio => X€
 - Taglio + Barba => Y€
 - Solo Barba => Z€
 - Tinta => W€
 
-(Controlla il file per i valori esatti). Quando si crea o aggiorna una prenotazione il server sostituisce il campo `prezzo` con il valore della mappa.
 
 ---
 
@@ -92,7 +91,6 @@ Il prezzo del servizio viene calcolato e imposto dal server per sicurezza (non f
 - GET /api/ordini — lista ordini
 - POST /api/ordini — crea ordine (aggiorna disponibilità prodotti)
 
-Nota: attualmente la protezione lato server (middleware che obbliga ruolo admin per PUT/DELETE) è raccomandata ma può non essere presente ovunque: valuta di aggiungerla come prossimo passo.
 
 ---
 
