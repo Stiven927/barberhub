@@ -97,6 +97,6 @@ Nota: attualmente la protezione lato server (middleware che obbliga ruolo admin 
 ---
 
 ## Autore
-Progetto BarberHub — (sviluppato localmente). Per domande o aiuto contatta il maintainer del repository.
+Progetto BarberHub — (sviluppato localmente). 
 
 ---
