@@ -1,4 +1,4 @@
-# BarberHub — Documentazione dettagliata
+# BarberHub — Read Me
 
 ## Panoramica
 BarberHub è un'applicazione full‑stack per la gestione di un salone da barba: prenotazioni, vendita prodotti, ordini e pannello amministrazione. Frontend in React e backend in Node.js/Express con database MySQL attraverso Sequelize.
@@ -96,66 +96,7 @@ Nota: attualmente la protezione lato server (middleware che obbliga ruolo admin 
 
 ---
 
-## Debug: perché nel calendario vedi tutti i pulsanti rossi (occupati)
-Se nel calendario tutti gli orari risultano come "occupati" (rossi), le cause comuni sono:
-1. Il backend restituisce date/ore con un formato o offset diversi da quanto il frontend si aspetta.
-2. La normalizzazione data/ora (comparazione) fallisce per colpa della localizzazione o di caratteri invisibili.
-
-Cosa ho corretto nel frontend:
-- Ho aggiornato `frontend/src/components/BookingCalendar.js` per usare Intl.DateTimeFormat con timezone `Europe/Rome` e formati stabili (`en-CA` per YYYY-MM-DD e `en-GB` per HH:MM). Inoltre la lista `occupati` ora viene normalizzata a `HH:MM` e filtrata prima del confronto.
-
-Cosa verificare subito:
-- Apri DevTools → Network → fai la richiesta GET `/api/prenotazioni` e guarda la risposta. Controlla il campo `data` delle prenotazioni; deve essere una stringa ISO valida (es. `2025-09-04T15:30:00.000Z` o con offset). Se il valore è diverso o contiene testo aggiuntivo, adattare la conversione lato frontend o backend.
-- Se vuoi vedere direttamente i dati, nella pagina Prenota apri la Console e cerca `occupati` o aggiungi temporaneamente nel componente un dump JSON di `prenotazioni` (solo per debug).
-
-Soluzioni se il problema persiste:
-- Assicurati che `p.data` sia una stringa interpretabile da `new Date(p.data)`; se non lo è modifica il backend per inviare un ISO string.
-- Se il backend memorizza orario separato, aggiorna la logica del frontend per leggere quel campo (es. `p.orario`).
-- Se le date arrivano in un timezone differente e vuoi forzarle a Europe/Rome, converti sul server o usa libreria come luxon/moment-timezone per normalizzare.
-
----
-
-## Test manuale rapido (verifica fix calendario)
-1. Avvia backend e frontend.
-2. Vai su pagina Prenota → apri DevTools → Network → refresh.
-3. Controlla risposta GET `/api/prenotazioni`: prendi un oggetto `data` e prova in console: `new Date('VALORE')` → verificare che restituisca la data corretta.
-4. Sempre in console: esegui
-
-```js
-const d = new Date('VALORE');
-d.toLocaleDateString('en-CA', { timeZone: 'Europe/Rome' }); // deve restituire YYYY-MM-DD
-new Intl.DateTimeFormat('en-GB', { hour:'2-digit', minute:'2-digit', timeZone:'Europe/Rome' }).format(d) // HH:MM
-```
-
-Se questi due valori coincidono con la data selezionata e con uno degli orari disponibili (`09:00`, `09:30`, ecc.) allora il pulsante non sarà rosso.
-
----
-
-## Note di sicurezza e produzione
-- Non fidarti dei prezzi inviati dal client: la logica di calcolo prezzo è già lato server, non revocare questa decisione.
-- Implementare autenticazione robusta (JWT o sessioni sicure) e middleware server per autorizzare azioni admin (PUT/DELETE su prenotazioni/prodotti/ordini).
-- Abilitare HTTPS in produzione, configurare CORS in modo restrittivo.
-- Per il DB usare migration scripts (sequelize-cli) anziché `sync({force:true})` in produzione.
-
----
-
-## Cose da fare (roadmap suggerita)
-- Aggiungere middleware di autorizzazione lato backend per bloccare PUT/DELETE agli utenti non admin.
-- Normalizzare la forma della risposta `GET /api/ordini` per avere sempre array di item con `nome`, `quantita`, `prezzo`.
-- Aggiungere test end-to-end per flusso prenotazione/ordine.
-- Aggiungere logging centrale e gestione errori migliorata in backend.
-
----
-
-## Contribuire
-- Fork, branch feature, pull request con descrizione e test.
-- Seguire lo stile esistente (JavaScript ES6, React functional components).
-
----
-
 ## Autore
 Progetto BarberHub — (sviluppato localmente). Per domande o aiuto contatta il maintainer del repository.
 
 ---
-
-(Questa README può essere ulteriormente personalizzata con esempi di API reali, screenshot e comandi di deployment CI/CD.)
